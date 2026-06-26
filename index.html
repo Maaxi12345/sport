@@ -3,102 +3,543 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Speed & Power Training Hub</title>
+    <title>Master Speed & Power Training Hub</title>
     <style>
         :root {
-            --primary-color: #2563eb;
-            --primary-hover: #1d4ed8;
-            --background: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
+            --bg-main: #0f172a;
+            --bg-card: #1e293b;
+            --primary: #38bdf8;
+            --primary-hover: #0ea5e9;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --accent: #f43f5e;
+            --highlight: #2563eb;
         }
 
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--background);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background-color: var(--bg-main);
             color: var(--text-main);
-            line-height: 1.6;
-            margin: 0;
-            padding: 40px 20px;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar navigation */
+        aside {
+            width: 320px;
+            background-color: #020617;
+            border-right: 1px solid var(--border);
+            padding: 25px;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            gap: 10px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        aside h2 {
+            font-size: 1.1rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            margin-top: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-align: left;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background-color: var(--bg-card);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* Main Content Area */
+        main {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            max-width: 1000px;
         }
 
         header {
-            text-align: center;
-            margin-bottom: 50px;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
         }
 
-        h1 {
-            color: var(--primary-color);
+        header h1 {
+            font-size: 2.5rem;
             margin-bottom: 10px;
-            font-size: 2.5em;
         }
 
-        .intro-text {
+        .subtitle {
             color: var(--text-muted);
-            font-size: 1.2em;
-            max-width: 600px;
+            font-size: 1.1rem;
         }
 
-        .nav-grid {
+        /* Plan Containers */
+        .plan-section {
+            display: none;
+        }
+
+        .plan-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .week-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: 1fr;
             gap: 30px;
-            width: 100%;
-            max-width: 800px;
+            margin-top: 20px;
         }
 
-        .nav-card {
-            background-color: var(--card-bg);
+        .week-card {
+            background-color: var(--bg-card);
             border-radius: 12px;
+            padding: 25px;
+            border: 1px solid var(--border);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            padding: 40px 30px;
-            text-align: center;
-            text-decoration: none;
-            color: var(--text-main);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            border: 2px solid transparent;
         }
 
-        .nav-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            border-color: var(--primary-color);
-        }
-
-        .nav-card h2 {
-            color: var(--primary-color);
-            margin-top: 0;
+        .week-header {
             margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
         }
 
-        .nav-card p {
-            color: var(--text-muted);
-            margin-bottom: 0;
+        .week-header h3 {
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            color: var(--text-main);
+            background-color: #111827;
+            font-weight: 600;
+        }
+
+        td a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        td a:hover {
+            text-decoration: underline;
+        }
+
+        .note {
+            background-color: #1e1b4b;
+            border-left: 4px solid var(--highlight);
+            padding: 10px 15px;
+            border-radius: 0 6px 6px 0;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Speed & Power Training</h1>
-        <p class="intro-text">Select your training focus for today's session.</p>
-    </header>
+    <aside>
+        <h2>Core Programs</h2>
+        <button class="nav-btn active" onclick="showPlan('plan1')">💥 1. Core Plyometrics</button>
+        <button class="nav-btn" onclick="showPlan('plan2')">⚡ 2. Max Sprinting</button>
+        
+        <h2>Advanced Modules</h2>
+        <button class="nav-btn" onclick="showPlan('plan3')">3. Agility & COD</button>
+        <button class="nav-btn" onclick="showPlan('plan4')">4. Weighted Plyometrics</button>
+        <button class="nav-btn" onclick="showPlan('plan5')">5. Hamstring Resilience</button>
+        <button class="nav-btn" onclick="showPlan('plan6')">6. Footwork & Ladder</button>
+        <button class="nav-btn" onclick="showPlan('plan7')">7. Barefoot Lower Limb</button>
+        <button class="nav-btn" onclick="showPlan('plan8')">8. Core Rotational</button>
+        <button class="nav-btn" onclick="showPlan('plan9')">9. Isometric Contrast</button>
+        <button class="nav-btn" onclick="showPlan('plan10')">10. Asymmetric Balance</button>
+        <button class="nav-btn" onclick="showPlan('plan11')">11. Hill Conditioning</button>
+        <button class="nav-btn" onclick="showPlan('plan12')">12. Reactive Speed</button>
+    </aside>
 
-    <div class="nav-grid">
-        <a href="plyometrics-plan.html" class="nav-card">
-            <h2>💥 Plyometrics</h2>
-            <p>4-week plan focusing on elasticity, force absorption, and vertical/horizontal power.</p>
-        </a>
+    <main>
+        <header>
+            <h1>Master Athletic Hub</h1>
+            <p class="subtitle">Complete dashboard for explosive power, sprint mechanics, and athletic resilience.</p>
+        </header>
 
-        <a href="sprinting-plan.html" class="nav-card">
-            <h2>⚡ Sprinting</h2>
-            <p>4-week plan focusing on running mechanics, acceleration, and maximum velocity.</p>
-        </a>
-    </div>
+        <!-- PLAN 1: CORE PLYOMETRICS (Original) -->
+        <div id="plan1" class="plan-section active">
+            <h2>💥 1. Core Plyometrics (4-Week Foundation)</h2>
+            <p class="text-muted">Build lower-body elasticity and explosive power to improve movement economy. Do twice a week.</p>
+            <div class="week-grid">
+                <div class="week-card">
+                    <div class="week-header"><h3>Week 1: Foundation & Ankle Stiffness</h3></div>
+                    <table>
+                        <tr><th>Exercise</th><th>Sets x Reps</th><th>Key Focus</th></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=how+to+do+pogo+jumps+exercise" target="_blank">Pogo Jumps ↗</a></td><td>3 x 15</td><td>Keep knees relatively straight; bounce using just your calves.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=how+to+do+squat+jumps+exercise" target="_blank">Squat Jumps ↗</a></td><td>3 x 8</td><td>Sink into a half squat, explode up, and land softly.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=how+to+do+drop+freezes+exercise" target="_blank">Drop Freezes ↗</a></td><td>3 x 5</td><td>Step off a low box (12in) and stick the landing. Do not jump.</td></tr>
+                    </table>
+                    <div class="note">⏱ Rest 90 seconds between all sets.</div>
+                </div>
+                <div class="week-card">
+                    <div class="week-header"><h3>Week 2: Force Absorption</h3></div>
+                    <table>
+                        <tr><th>Exercise</th><th>Sets x Reps</th><th>Key Focus</th></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=how+to+do+pogo+jumps+exercise" target="_blank">Pogo Jumps ↗</a></td><td>3 x 20</td><td>Faster ground contact times than Week 1.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=how+to+do+broad+jumps+exercise" target="_blank">Broad Jumps ↗</a></td><td>3 x 5</td><td>Jump forward max distance. Reset completely between reps.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=how+to+do+lateral+bounds+skater+jumps" target="_blank">Lateral Bounds ↗</a></td><td>3 x 8 / leg</td><td>Jump side-to-side from one foot to the other.</td></tr>
+                    </table>
+                    <div class="note">⏱ Rest 2 minutes between broad jumps and bounds.</div>
+                </div>
+                <div class="week-card">
+                    <div class="week-header"><h3>Week 3: Elasticity & Speed</h3></div>
+                    <table>
+                        <tr><th>Exercise</th><th>Sets x Reps</th><th>Key Focus</th></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=how+to+do+tuck+jumps+exercise" target="_blank">Tuck Jumps ↗</a></td><td>3 x 6</td><td>Jump high, bring knees to chest, react immediately on landing.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=how+to+do+box+jumps+safely" target="_blank">Box Jumps ↗</a></td><td>4 x 5</td><td>Explode onto box. Step down carefully.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=how+to+do+continuous+broad+jumps" target="_blank">Continuous Broad ↗</a></td><td>3 x 4</td><td>Link jumps together. As soon as you land, launch again.</td></tr>
+                    </table>
+                </div>
+                <div class="week-card">
+                    <div class="week-header"><h3>Week 4: Integration & Power</h3></div>
+                    <table>
+                        <tr><th>Exercise</th><th>Sets x Reps</th><th>Key Focus</th></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=how+to+do+single+leg+hops+plyometrics" target="_blank">Single-Leg Hops ↗</a></td><td>3 x 5 / leg</td><td>Hop forward on one leg. Focus on stability when you land.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=how+to+do+box+jumps+safely" target="_blank">Box Jumps ↗</a></td><td>4 x 6</td><td>Increase box height slightly from last week.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=how+to+do+depth+jumps+plyometrics" target="_blank">Depth Jumps ↗</a></td><td>3 x 4</td><td>Step off box, hit ground, immediately jump max vertical.</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
 
+        <!-- PLAN 2: CORE SPRINTING (Original) -->
+        <div id="plan2" class="plan-section">
+            <h2>⚡ 2. Core Sprinting (4-Week Velocity)</h2>
+            <p class="text-muted">Develop acceleration, mechanics, and top-end speed. Do 1-2 times a week on non-plyo days.</p>
+            <div class="week-grid">
+                <div class="week-card">
+                    <div class="week-header"><h3>Week 1: Mechanics & Strides</h3></div>
+                    <table>
+                        <tr><th>Exercise</th><th>Sets x Distance</th><th>Key Focus</th></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=how+to+do+A-skips+track+and+field" target="_blank">A-Skips ↗</a></td><td>3 x 20m</td><td>High knees, strike ground directly under center of mass.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=how+to+run+strides+running" target="_blank">Strides ↗</a></td><td>4 x 60m</td><td>Accelerate to ~80% of max speed, hold, then glide to a stop.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=short+hill+sprints" target="_blank">Short Hill Sprints ↗</a></td><td>4 x 10 sec</td><td>Moderate incline. Focus on aggressive arm drive.</td></tr>
+                    </table>
+                </div>
+                <div class="week-card">
+                    <div class="week-header"><h3>Week 2: Acceleration Phase</h3></div>
+                    <table>
+                        <tr><th>Exercise</th><th>Sets x Distance</th><th>Key Focus</th></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=wall+drills+sprinting" target="_blank">Wall Drills ↗</a></td><td>3 x 10 sec</td><td>Lean against wall at 45 degrees. Drive knees like pistons.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=flying+20s+sprints" target="_blank">Flying 20s ↗</a></td><td>4 x 60m total</td><td>20m build-up → 20m max sprint → 20m deceleration.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=short+hill+sprints" target="_blank">Hill Sprints ↗</a></td><td>6 x 10 sec</td><td>Slightly steeper incline than last week. 95% effort.</td></tr>
+                    </table>
+                </div>
+                <div class="week-card">
+                    <div class="week-header"><h3>Week 3: Speed Endurance</h3></div>
+                    <table>
+                        <tr><th>Exercise</th><th>Sets x Distance</th><th>Key Focus</th></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=how+to+do+B-skips+track+and+field" target="_blank">B-Skips ↗</a></td><td>3 x 20m</td><td>Extend leg forward and actively "paw" the ground.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=100m+sprint+form" target="_blank">100m Repeats ↗</a></td><td>4 x 100m</td><td>90% effort. Keep shoulders relaxed.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=150m+sprint+tips" target="_blank">150m Repeats ↗</a></td><td>2 x 150m</td><td>85% effort. Do not let form break down in last 30m.</td></tr>
+                    </table>
+                </div>
+                <div class="week-card">
+                    <div class="week-header"><h3>Week 4: Max Velocity</h3></div>
+                    <table>
+                        <tr><th>Exercise</th><th>Sets x Distance</th><th>Key Focus</th></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=how+to+do+bounding+plyometrics" target="_blank">Bounding ↗</a></td><td>3 x 20m</td><td>Exaggerated steps maximizing air time and distance.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=50m+sprint+start" target="_blank">50m Max Effort ↗</a></td><td>5 x 50m</td><td>100% all-out effort. Run completely through finish line.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=flying+30s+sprints" target="_blank">Flying 30s ↗</a></td><td>3 x 70m total</td><td>20m build-up → 30m absolute max speed → 20m decel.</td></tr>
+                    </table>
+                    <div class="note">⏱ Rest 3 to 4 minutes between sets. Your CNS needs time to reset.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PLAN 3: AGILITY -->
+        <div id="plan3" class="plan-section">
+            <h2>3. Agility & Change of Direction (COD)</h2>
+            <p class="text-muted">Focuses on deceleration mechanics, cutting angles, and rapid re-acceleration.</p>
+            <div class="week-grid">
+                <div class="week-card">
+                    <div class="week-header"><h3>Week 1-2: Deceleration Foundations</h3></div>
+                    <table>
+                        <tr><th>Exercise</th><th>Volume</th><th>Key Focus</th></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=5-10-5+shuttle+drill" target="_blank">5-10-5 Pro Shuttle ↗</a></td><td>4 runs</td><td>Drop hips low on the turn.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=L-drill+three+cone+test" target="_blank">L-Drill (3 Cone) ↗</a></td><td>3 runs</td><td>Tight loops around the corner cone.</td></tr>
+                    </table>
+                </div>
+                <div class="week-card">
+                    <div class="week-header"><h3>Week 3-4: Advanced Cutting Angles</h3></div>
+                    <table>
+                        <tr><th>Exercise</th><th>Volume</th><th>Key Focus</th></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=Z-run+agility+drill" target="_blank">Z-Run Drills ↗</a></td><td>5 sets</td><td>Plant hard with outside foot.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=box+drill+agility" target="_blank">4-Cone Box Drill ↗</a></td><td>4 sets</td><td>Sprint, shuffle, backpedal transitions.</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- PLAN 4: WEIGHTED PLYOMETRICS -->
+        <div id="plan4" class="plan-section">
+            <h2>4. Weighted Plyometrics & Power</h2>
+            <p class="text-muted">Overloading the stretch-shortening cycle safely with light external loads.</p>
+            <div class="week-grid">
+                <div class="week-card">
+                    <div class="week-header"><h3>Week 1-2: Light Load Accumulation</h3></div>
+                    <table>
+                        <tr><th>Exercise</th><th>Volume</th><th>Key Focus</th></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=medicine+ball+squat+jump" target="_blank">Med Ball Squat Jumps ↗</a></td><td>3 x 6 (8lb)</td><td>Throw hands upward with ball.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=dumbbells+pogo+hops" target="_blank">DB Ankle Pogos ↗</a></td><td>3 x 12 (Light)</td><td>Stiff ankles, springy movement.</td></tr>
+                    </table>
+                </div>
+                <div class="week-card">
+                    <div class="week-header"><h3>Week 3-4: Velocity Release</h3></div>
+                    <table>
+                        <tr><th>Exercise</th><th>Volume</th><th>Key Focus</th></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=weighted+vest+box+jumps" target="_blank">Vest Box Jumps ↗</a></td><td>4 x 4</td><td>Explode smoothly, land soft.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=med+ball+underhand+countermovement+throw" target="_blank">MB Underhand Launch ↗</a></td><td>4 x 5</td><td>Throw for vertical maximum distance.</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- PLAN 5: HAMSTRING RESILIENCE -->
+        <div id="plan5" class="plan-section">
+            <h2>5. Nordic & Hamstring Resilience</h2>
+            <p class="text-muted">Preventing high-speed sprint pulls via eccentric knee flexion training.</p>
+            <div class="week-grid">
+                <div class="week-card">
+                    <div class="week-header"><h3>Week 1-2: Eccentric Control</h3></div>
+                    <table>
+                        <tr><th>Exercise</th><th>Volume</th><th>Key Focus</th></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=nordic+hamstring+curl+eccentric" target="_blank">Nordic Drops ↗</a></td><td>3 x 4 reps</td><td>Lower down as slowly as possible.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=stability+ball+hamstring+curls" target="_blank">Swiss Ball Curls ↗</a></td><td>3 x 12 reps</td><td>Keep hips high throughout.</td></tr>
+                    </table>
+                </div>
+                <div class="week-card">
+                    <div class="week-header"><h3>Week 3-4: High Velocity Overload</h3></div>
+                    <table>
+                        <tr><th>Exercise</th><th>Volume</th><th>Key Focus</th></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=razor+curl+hamstring" target="_blank">Razor Curls ↗</a></td><td>3 x 5 reps</td><td>Hinge at hips, fire hamstrings hard.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=single+leg+romanian+deadlift+speed" target="_blank">Speed Single-Leg RDL ↗</a></td><td>3 x 8 / leg</td><td>Snap up quickly using glutes.</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- PLAN 6: LADDER MASTERY -->
+        <div id="plan6" class="plan-section">
+            <h2>6. Footwork & Agility Ladder Mastery</h2>
+            <p class="text-muted">Developing neuro-muscular efficiency and short cadence stride tracking.</p>
+            <div class="week-grid">
+                <div class="week-card">
+                    <div class="week-header"><h3>Week 1-2: Rhythm & Baselines</h3></div>
+                    <table>
+                        <tr><th>Exercise</th><th>Volume</th><th>Key Focus</th></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=agility+ladder+ickey+shuffle" target="_blank">The Ickey Shuffle ↗</a></td><td>4 passes</td><td>Maintain a low athletic stance.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=agility+ladder+two+in+two+out" target="_blank">Two-In, Two-Out ↗</a></td><td>4 passes</td><td>Minimize heel-to-ground contact.</td></tr>
+                    </table>
+                </div>
+                <div class="week-card">
+                    <div class="week-header"><h3>Week 3-4: Extreme Cadence Velocity</h3></div>
+                    <table>
+                        <tr><th>Exercise</th><th>Volume</th><th>Key Focus</th></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=agility+ladder+ali+shuffle" target="_blank">Ali Shuffle ↗</a></td><td>4 passes</td><td>Fast hip rotation speed.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=ladder+drill+lateral+fast+feet" target="_blank">Lateral In-Out ↗</a></td><td>4 passes</td><td>Do not look down at your feet.</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- PLAN 7: BAREFOOT LOWER LIMB -->
+        <div id="plan7" class="plan-section">
+            <h2>7. Barefoot & Lower Limb Durability</h2>
+            <p class="text-muted">Strengthening tendons and fascia on natural turf to mitigate shin-splints.</p>
+            <div class="week-grid">
+                <div class="week-card">
+                    <div class="week-header"><h3>Week 1-2: Fascial Loading</h3></div>
+                    <table>
+                        <tr><th>Exercise</th><th>Volume</th><th>Key Focus</th></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=barefoot+grass+strides" target="_blank">Barefoot Grass Strides ↗</a></td><td>5 x 50m</td><td>Run at 70% intensity, landing midfoot.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=single+leg+calf+raise+isometric" target="_blank">Iso Single-Leg Calf Raise ↗</a></td><td>3 x 30s holds</td><td>Hold at peak height. Do not sag.</td></tr>
+                    </table>
+                </div>
+                <div class="week-card">
+                    <div class="week-header"><h3>Week 3-4: Dynamic Elastic Elasticity</h3></div>
+                    <table>
+                        <tr><th>Exercise</th><th>Volume</th><th>Key Focus</th></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=barefoot+pogo+hops" target="_blank">Barefoot Grass Pogos ↗</a></td><td>3 x 15 reps</td><td>Quick bouncing off the grass.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=tibilas+raises" target="_blank">Tibialis Wall Raises ↗</a></td><td>3 x 25 reps</td><td>Pull toes up towards shins hard.</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- PLAN 8: CORE ROTATIONAL -->
+        <div id="plan8" class="plan-section">
+            <h2>8. Core Rotational Power</h2>
+            <p class="text-muted">Linking lower-body torque into upper-body propulsion mechanics.</p>
+            <div class="week-grid">
+                <div class="week-card">
+                    <div class="week-header"><h3>Week 1-2: Stabilization Torque</h3></div>
+                    <table>
+                        <tr><th>Exercise</th><th>Volume</th><th>Key Focus</th></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=pallof+press+rotational" target="_blank">Pallof Press ↗</a></td><td>3 x 10 / side</td><td>Resist rotational pull. Stiff spine.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=rotational+medicine+ball+slam" target="_blank">Rotational MB Slams ↗</a></td><td>3 x 6 / side</td><td>Pivot your back foot like a hitter.</td></tr>
+                    </table>
+                </div>
+                <div class="week-card">
+                    <div class="week-header"><h3>Week 3-4: Kinetic Ballistics</h3></div>
+                    <table>
+                        <tr><th>Exercise</th><th>Volume</th><th>Key Focus</th></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=medicine+ball+scoop+throw+rotational" target="_blank">MB Scoop Side Throws ↗</a></td><td>4 x 5 / side</td><td>Throw ball horizontally max distance.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=woodchopper+cable+speed" target="_blank">High-Velocity Cables ↗</a></td><td>3 x 8 / side</td><td>Maximal concentric pulling velocity.</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- PLAN 9: CONTRAST TRAINING -->
+        <div id="plan9" class="plan-section">
+            <h2>9. Isometric to Explosive Contrast (PAP)</h2>
+            <p class="text-muted">Using heavy isometric contractions to unlock max motor-unit recruitment.</p>
+            <div class="week-grid">
+                <div class="week-card">
+                    <div class="week-header"><h3>Week 1-4: The Contrast Pair Matrix</h3></div>
+                    <div class="note">Perform A1 immediately followed by A2. Rest 3 minutes before the next set.</div>
+                    <table>
+                        <tr><th>Exercise</th><th>Volume</th><th>Key Focus</th></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=isometric+squat+against+pins" target="_blank">A1. Overcoming Iso Squat ↗</a></td><td>4 x 6 seconds</td><td>Push up against static pins at 100% force.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=vertical+jump+max+effort" target="_blank">A2. Max Vertical Jump ↗</a></td><td>4 x 3 reps</td><td>Explode instantly. Notice the lighter feel.</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- PLAN 10: ASYMMETRIC SINGLE LEG -->
+        <div id="plan10" class="plan-section">
+            <h2>10. Asymmetric & Single-Leg Balance</h2>
+            <p class="text-muted">Eliminating bilateral performance gaps to ensure even output down the track.</p>
+            <div class="week-grid">
+                <div class="week-card">
+                    <div class="week-header"><h3>Week 1-2: Single Leg Isolation</h3></div>
+                    <table>
+                        <tr><th>Exercise</th><th>Volume</th><th>Key Focus</th></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=split+squat+jump" target="_blank">Split Squat Jumps ↗</a></td><td>3 x 5 / leg</td><td>Catch cleanly, maintain linear knee track.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=single+leg+linear+hop+stick+landing" target="_blank">SL Bound & Stick ↗</a></td><td>3 x 4 / leg</td><td>Hold landing completely stable for 2s.</td></tr>
+                    </table>
+                </div>
+                <div class="week-card">
+                    <div class="week-header"><h3>Week 3-4: Power Equalization</h3></div>
+                    <table>
+                        <tr><th>Exercise</th><th>Volume</th><th>Key Focus</th></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=single+leg+box+jump" target="_blank">SL Vertical Box Jump ↗</a></td><td>4 x 3 / leg</td><td>Drive free knee high for momentum.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=lateral+single+leg+triple+hop" target="_blank">SL Lateral Triple Jumps ↗</a></td><td>3 sets / leg</td><td>Continuous sideways bounding.</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- PLAN 11: HILL CONDITIONING -->
+        <div id="plan11" class="plan-section">
+            <h2>11. Hill & Incline Conditioning</h2>
+            <p class="text-muted">Biasing mechanics towards acceleration angles via uphill force production.</p>
+            <div class="week-grid">
+                <div class="week-card">
+                    <div class="week-header"><h3>Week 1-2: Short Velocity Bursts</h3></div>
+                    <table>
+                        <tr><th>Exercise</th><th>Volume</th><th>Key Focus</th></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=short+steep+hill+sprints" target="_blank">Steep Hill Acceleration ↗</a></td><td>6 x 15m</td><td>Drive feet back hard down into slope.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=hill+bounding+plyometrics" target="_blank">Incline Bounding ↗</a></td><td>3 x 20m</td><td>Exaggerated steps pushing up the incline.</td></tr>
+                    </table>
+                </div>
+                <div class="week-card">
+                    <div class="week-header"><h3>Week 3-4: Lactate-Cap Power</h3></div>
+                    <table>
+                        <tr><th>Exercise</th><th>Volume</th><th>Key Focus</th></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=long+hill+sprint+intervals" target="_blank">Extended Hill Repeats ↗</a></td><td>4 x 60m</td><td>90% max velocity up a gentle slope.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=hill+carries+sprint" target="_blank">Medicine Ball Hill Runs ↗</a></td><td>4 x 20m</td><td>Hold ball at chest, sprint upright.</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- PLAN 12: REACTIVE SPEED -->
+        <div id="plan12" class="plan-section">
+            <h2>12. Reactive & Cognitive Speed</h2>
+            <p class="text-muted">Training visual-spatial parsing and decreasing response time parameters.</p>
+            <div class="week-grid">
+                <div class="week-card">
+                    <div class="week-header"><h3>Week 1-4: Non-Planned Reaction Mechanics</h3></div>
+                    <div class="note">Requires a partner or audio cue application tool to function correctly.</div>
+                    <table>
+                        <tr><th>Exercise</th><th>Volume</th><th>Key Focus</th></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=ball+drop+reaction+drill+sprint" target="_blank">Tennis Ball Drop ↗</a></td><td>6 attempts</td><td>Partner drops ball; sprint and grab before 2nd bounce.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=partner+color+match+cone+drill" target="_blank">Color Callout Cuts ↗</a></td><td>5 sets</td><td>React immediately to random callouts.</td></tr>
+                        <tr><td><a href="https://www.youtube.com/results?search_query=shadow+drills+agility" target="_blank">Mirror Shadow Drill ↗</a></td><td>4 x 15s</td><td>Mimic partner's movements laterally.</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        function showPlan(planId) {
+            // Hide all plan sections
+            document.querySelectorAll('.plan-section').forEach(plan => {
+                plan.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Activate the clicked plan and its corresponding button
+            document.getElementById(planId).classList.add('active');
+            event.currentTarget.classList.add('active');
+            
+            // Scroll back to the top of the main content area when switching
+            document.querySelector('main').scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
 </body>
 </html>
